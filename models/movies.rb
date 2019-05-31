@@ -47,13 +47,11 @@ class Movie
   end
 
   def calc_budget
-    sql = "SELECT fee FROM castings WHERE movie_id = $1"
+    sql = "SELECT sum(fee) FROM castings WHERE movie_id = $1"
     values =[@id]
     all_fees = SqlRunner.run(sql, values)
-
-    total_fees = 0
-    all_fees.each { |fee| total_fees += fee["fee"].to_i }
-    return @budget -= total_fees
+    @budget -= all_fees[0]["sum"].to_i
+    return @budget
   end
 
   def self.delete()
